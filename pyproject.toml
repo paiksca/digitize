@@ -37,10 +37,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8"]
 
-# Update these to your fork before publishing.
 [project.urls]
-Homepage = "https://github.com/your-org/digitize"
-"Agent guide" = "https://github.com/your-org/digitize/blob/main/AGENT_GUIDE.md"
+Homepage = "https://github.com/paiksca/digitize"
+Repository = "https://github.com/paiksca/digitize"
+"Agent guide" = "https://github.com/paiksca/digitize/blob/main/AGENT_GUIDE.md"
 
 [project.scripts]
 digitize = "digitize.cli:main"
