@@ -22,9 +22,11 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# digitize working data — sessions and input/working figures are NOT part of the
-# package (the test suite generates its own synthetic figures via tests/synth.py)
+# digitize working data — sessions, input/working figures, and digitized outputs
+# are NOT part of the package (derived from copyrighted figures; the test suite
+# generates its own synthetic figures via tests/synth.py)
 *.digitize/
+digitized_csv/
 /*.png
 /*.jpg
 /*.jpeg

@@ -100,6 +100,14 @@ calibration per axis. `digitize grid IMAGE` gives a labelled pixel grid to read
 sub-panel boxes off dense composites. Validated on a real 12-panel multi-omics
 figure: the heatmap recovered the exact cell-lineage diagonal; only dendrograms
 and embedding axes remain out of scope.
+
+For **dense, overlapping, and occluded** multi-series figures, `digitize.extract.dense`
+adds: distance-transform marker detection (`extract --kind markers`, true positions
+under non-uniform sampling), continuity tracking + slope-fill, occluded
+circle-center recovery from a partial arc, and momentum tracing of monochrome
+overlapping lines with solid/dashed/dotted labelling — paired with exact-hex
+nearest-color segmentation to separate near-identical shades. Validated on a
+real siRNA PK/PD figure set (Patisiran, Revusiran, Givosiran, Inclisiran).
 Rich marks attach their levels to each point's `extra` dict (box quartiles,
 forest CI, bar edges), which `values` converts to data automatically. Axes can be
 linear / log / logit / **categorical**. Anything not directly covered (violin,

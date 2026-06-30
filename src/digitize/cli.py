@@ -25,6 +25,7 @@ from . import imaging, overlay, ticks as ticksmod, verify as verifymod
 from .calibrate import build_calibration
 from .extract import bar as barx
 from .extract import boxplot as boxx
+from .extract import dense as densex
 from .extract import forest as forestx
 from .extract import heatmap as heatx
 from .extract import km as kmx
@@ -485,7 +486,7 @@ def calibrate(session, auto, x_values, y_values, xscale, yscale, x_refs, y_refs,
 @SESSION_OPT
 @click.option("--series", "sname", required=True)
 @click.option("--kind", default=None, type=click.Choice(
-    ["scatter", "line", "bar", "box", "forest", "hbar", "km", "waterfall"]))
+    ["scatter", "markers", "line", "bar", "box", "forest", "hbar", "km", "waterfall"]))
 @click.option("--orient", default="v", type=click.Choice(["v", "h"]),
               help="box/bar orientation (v=vertical, h=horizontal)")
 @click.option("--baseline", default=None, type=float,
@@ -574,6 +575,10 @@ def extract(session, sname, kind, orient, baseline, seed_color, samples, templat
                 eax = ("both" if errorbars and errorbars_x
                        else "x" if errorbars_x else "y")
                 pts = extract_errorbars(ink, pts, m.plot_box, axis=eax)
+        elif kind == "markers":
+            # distance-transform peaks -> markers at their TRUE positions, even
+            # when sampled non-uniformly (peaks/troughs between assumed x-values)
+            pts = densex.detect_markers(smask, min_distance=max(4, open_k * 3 + 7))
         elif kind == "line":
             at_px = None
             if at_vals:

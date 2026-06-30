@@ -241,8 +241,28 @@ calibrate --auto                 calibrate --x-ref --y-ref [--no-snap] [--mode a
 extract --series N [--seed-color|--sample|--template] [--exclude] [--tol]
         [--split-factor] [--open K] [--shape circle|triangle|diamond|square]
         [--roi] [--errorbars] [--errorbars-x]
+        [--kind markers]   # distance-transform marker centres @ TRUE positions
         [--kind line --resample N|--at vals --smooth W --edge top|bottom|band]
 heatmap --grid BOX --rows N --cols M --colorbar BOX --vmin V --vmax V [--log]
 edit --series N [--add|--remove|--move]   values --all [--pixel-sigma]
 verify    fit --series N --model 4pl|emax|exp1|exp2|nca    export    info
 ```
+
+## Dense / overlapping / occluded figures (`digitize.extract.dense`)
+
+For figures where curves cross, share error bars, use near-identical shades, are
+non-uniformly sampled, or hide behind another series — compose these helpers
+(also used to digitise the siRNA PK/PD figure set to figure resolution):
+
+- `detect_markers(mask)` — marker centres as distance-transform peaks (fat blobs);
+  recovers markers at their TRUE x when sampling is non-uniform (sharp peaks land
+  *between* assumed grid points). CLI: `extract --kind markers`.
+- `track_series` / `fill_gaps` — pick a smooth path through per-column candidate
+  bands (reject crossing-point distractors), then slope-interpolate occluded gaps.
+- `recover_circle(mask, cx, cy, r)` — locate a partly-hidden circle's centre from
+  its visible arc (known radius constrains the full circle).
+- `trace_lines` + `line_duty_cycle` — momentum-track monochrome overlapping lines
+  through crossings and label them solid/dashed/dotted by duty cycle.
+
+Pair with multi-colour nearest-assignment (`color.segment_series` with ALL series'
+*exact legend-swatch* hexes) to separate near-identical grey shades.
