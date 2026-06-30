@@ -88,7 +88,7 @@ def _fit_line_robust(p, u):
     m0 = float(np.median(slopes))
     b0 = float(np.median(u - m0 * p))
     resid = np.abs(u - (m0 * p + b0))
-    span = max(float(np.ptp(u)), 1e-9)
+    span = max(float(u.max() - u.min()), 1e-9)
     mad = float(np.median(np.abs(resid - np.median(resid))))
     thresh = max(3 * 1.4826 * mad, 0.04 * span)
     keep = resid <= thresh

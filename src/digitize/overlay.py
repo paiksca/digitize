@@ -173,8 +173,8 @@ def render_verify(rgb, plot_box, manifest, series_list, out_path):
             ax.plot(np.array(xs)[order], np.array(ys)[order], "-", color=color,
                     label=sd.name)
         else:
-            yerr = [p.y_err for p in sd.points if p.x is not None]
-            if any(e for e in yerr):
+            yerr = [p.y_err if p.y_err else 0 for p in sd.points if p.x is not None]
+            if any(yerr):
                 ax.errorbar(xs, ys, yerr=yerr, fmt="o", color=color, ms=4,
                             capsize=2, label=sd.name)
             else:

@@ -764,7 +764,8 @@ def values(session, sname, do_all, pixel_sigma):
 
 
 def _write_csv(sess: Session, sd: SeriesData) -> str:
-    path = sess.series_dir / f"{sd.name}.csv"
+    safe = "".join(c if c.isalnum() or c in "-_." else "_" for c in sd.name)
+    path = sess.series_dir / f"{safe}.csv"
     cols = ["x", "y", "x_err", "y_err", "y_lo", "y_hi", "px", "py", "source"]
     with open(path, "w", newline="") as f:
         w = csv.writer(f)
