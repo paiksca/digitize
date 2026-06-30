@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "digitize"
+version = "0.1.0"
+description = "LLM-operated precision digitizer for biomedical graphs"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Samuel Paik-Heintz" }]
+keywords = [
+    "plot-digitizer", "figure-digitization", "data-extraction",
+    "biomedical", "pk-pd", "dose-response", "kaplan-meier", "llm", "claude-code",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "opencv-python-headless>=4.8",
+    "scikit-image>=0.22",
+    "matplotlib>=3.8",
+    "pillow>=10",
+    "click>=8.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+# Update these to your fork before publishing.
+[project.urls]
+Homepage = "https://github.com/your-org/digitize"
+"Agent guide" = "https://github.com/your-org/digitize/blob/main/AGENT_GUIDE.md"
+
+[project.scripts]
+digitize = "digitize.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+digitize = ["py.typed"]

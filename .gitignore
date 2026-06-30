@@ -1,0 +1,35 @@
+# virtual environments
+.venv/
+venv/
+env/
+
+# python build / bytecode
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+*.so
+
+# test / type / lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# digitize working data — sessions and input/working figures are NOT part of the
+# package (the test suite generates its own synthetic figures via tests/synth.py)
+*.digitize/
+/*.png
+/*.jpg
+/*.jpeg
+/*.xlsx
+/*.csv
+examples/*.png
+examples/*.truth.json
+examples/*.digitize/
