@@ -85,6 +85,9 @@ def _fit_line_robust(p, u):
     slopes = [(u[j] - u[i]) / (p[j] - p[i])
               for i in range(p.size) for j in range(i + 1, p.size)
               if p[j] != p[i]]
+    if not slopes:  # all refs share the same pixel coordinate — degenerate
+        m, b, _ = _fit_line(p, u)
+        return m, b, np.ones(p.size, bool)
     m0 = float(np.median(slopes))
     b0 = float(np.median(u - m0 * p))
     resid = np.abs(u - (m0 * p + b0))

@@ -19,7 +19,7 @@ def extract_km(series_mask, plot_box, resample: int | None = None,
     pys = np.array([p["py"] for p in pts], float)
     # survival decreases over time -> data y falls -> pixel row only increases
     mono = np.maximum.accumulate(pys) if direction == "down" \
-        else np.minimum.accumulate(pys[::-1])[::-1]
+        else np.minimum.accumulate(pys)
     for p, m in zip(pts, mono):
         p["py"] = float(m)
     return pts

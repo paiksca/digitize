@@ -69,8 +69,12 @@ def fit_4pl(x, y, sigma=None):
     x = np.asarray(x, float); y = np.asarray(y, float)
     a0, d0 = float(y[np.argmin(x)]), float(y[np.argmax(x)])
     c0 = float(np.exp(np.mean(np.log(x[x > 0])))) if np.any(x > 0) else float(np.median(x))
-    bounds = ([min(a0, d0) - abs(d0 - a0) - 1, 0.05, x[x > 0].min() * 1e-2 if np.any(x > 0) else 1e-9, min(a0, d0) - abs(d0 - a0) - 1],
-              [max(a0, d0) + abs(d0 - a0) + 1, 20.0, x.max() * 1e2, max(a0, d0) + abs(d0 - a0) + 1])
+    # use 3× the observed range as a buffer so partially-extracted curves (where
+    # one plateau is outside the data range) are not clamped to a false EC50
+    buf = max(3 * abs(d0 - a0), abs(a0) * 0.5, abs(d0) * 0.5, 10.0)
+    lo_asymp, hi_asymp = min(a0, d0) - buf, max(a0, d0) + buf
+    bounds = ([lo_asymp, 0.05, x[x > 0].min() * 1e-2 if np.any(x > 0) else 1e-9, lo_asymp],
+              [hi_asymp, 20.0, x.max() * 1e2, hi_asymp])
     popt, perr, r2, w = _fit(four_pl, x, y, [a0, 1.0, c0, d0], sigma, bounds)
     p = _params(["resp_x0", "hill", "ec50", "resp_xinf"], popt, perr)
     xf, yf = _curve(four_pl, x, popt, log_x=True)
@@ -148,7 +152,9 @@ def nca(t, c):
     for start in range(tail_start, len(t) - 2):
         sel = idx[idx >= start]
         ts, cs = t[sel], c[sel]
-        if np.any(cs <= 0) or ts.size < 3:
+        pos = cs > 0
+        ts, cs = ts[pos], cs[pos]  # exclude BLQ/zero points within the window
+        if ts.size < 3:
             continue
         slope, intercept = np.polyfit(ts, np.log(cs), 1)
         yhat = slope * ts + intercept

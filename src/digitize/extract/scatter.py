@@ -69,11 +69,11 @@ def extract_markers(series_mask: np.ndarray, min_area: int | None = None,
         if max_area and c["area"] > max_area and not split_merged:
             continue
         x, y, w, h = c["bbox"]
-        shp, _circ = _classify_shape(mask[y:y + h, x:x + w])
         big = split_merged and med > 0 and c["area"] > med * split_factor
         if big:
-            pts.extend({**q, "shape": shp} for q in _split_blob(mask, c, med))
+            pts.extend(_split_blob(mask, c, med))
         else:
+            shp, _circ = _classify_shape(mask[y:y + h, x:x + w])
             pts.append({"px": c["cx"], "py": c["cy"], "area": c["area"],
                         "shape": shp, "source": "auto"})
     if shape:
@@ -89,8 +89,9 @@ def _split_blob(mask: np.ndarray, comp: dict, med_area: float) -> list[dict]:
     min_d = max(2, int(np.sqrt(med_area / np.pi)))
     coords = peak_local_max(dist, num_peaks=k, min_distance=min_d, labels=sub > 0)
     if len(coords) <= 1:
+        shp, _ = _classify_shape(sub > 0)
         return [{"px": comp["cx"], "py": comp["cy"], "area": comp["area"],
-                 "source": "auto"}]
+                 "shape": shp, "source": "auto"}]
     markers = np.zeros(dist.shape, dtype=np.int32)
     for idx, (ry, rx) in enumerate(coords, 1):
         markers[ry, rx] = idx
@@ -102,8 +103,9 @@ def _split_blob(mask: np.ndarray, comp: dict, med_area: float) -> list[dict]:
         if a < config.MIN_MARKER_AREA:
             continue
         ys, xs = np.where(m)
+        shp, _ = _classify_shape(m)
         out.append({"px": float(xs.mean() + x), "py": float(ys.mean() + y),
-                    "area": a, "source": "auto"})
+                    "area": a, "shape": shp, "source": "auto"})
     return out
 
 

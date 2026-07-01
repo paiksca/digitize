@@ -146,7 +146,7 @@ def segment_series(rgb: np.ndarray, plot_mask: np.ndarray,
     lab = rgb_to_lab(rgb)
     flat = lab.reshape(-1, 3)
     series_labs = [m.lab for m in models]
-    any_dark = any(m.chroma < config.LOW_CHROMA * 1.5 or m.lab[0] < 35
+    any_dark = any(m.chroma < config.LOW_CHROMA * 1.5 and m.lab[0] < 35
                    for m in models)
     bg = [np.array([100.0, 0.0, 0.0])]  # white paper
     if include_dark_bg and not any_dark:

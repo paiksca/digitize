@@ -45,7 +45,9 @@ def extract_forest(series_mask: np.ndarray, plot_box, min_ci_frac: float = 0.015
         segs = np.split(idx, splits + 1)
         ci = max(segs, key=len)
         lo, hi = int(ci[0]), int(ci[-1])
-        if hi - lo >= 0.9 * bw:  # a full-width line is an axis spine, not a CI
+        # reject only near-full-width lines that also span the entire row height
+        # (a spine has 1-2px of vertical extent; a CI row is several px tall)
+        if hi - lo >= 0.97 * bw and (ry1 - ry0) <= 2:
             continue
         colsum = sub.sum(axis=0)
         colsum[:lo] = 0
